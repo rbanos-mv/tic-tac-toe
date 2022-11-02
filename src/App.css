@@ -3,3 +3,35 @@
   margin: 0;
   padding: 0;
 }
+
+.App {
+  padding-top: 100px;
+  text-align: center;
+}
+
+.game-board {
+  background-color: aquamarine;
+  padding: 2px 0;
+  margin: 0 auto;
+  border: 2px solid blue;
+  width: 128px;
+}
+
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  color: black;
+  height: 40px;
+  width: 40px;
+  margin: 2px;
+}
+
+.tileRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 2px;
+  width: 120px;
+}
