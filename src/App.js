@@ -1,11 +1,26 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import './App.css';
 
 function App() {
+  const [moves, setMoves] = useState([]);
+
+  function addMove(coord) {
+    const newMoves = [...moves];
+    newMoves.push(coord);
+
+    setMoves(newMoves);
+  }
+
   function Tile({ coord }) {
+    const populatedCoord = moves.find((move) => move.join() === coord.join());
+
+    const text = populatedCoord || '';
+
     return (
-      <div className="tile">
-        {coord}
+      <div className="tile" onClick={() => addMove(coord)} role="button" tabIndex="0">
+        {text}
       </div>
     );
   }
