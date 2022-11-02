@@ -116,6 +116,7 @@ function App() {
           ))}
         </div>
       </div>
+      <p>&nbsp;</p>
       {winner
         ? (
           <>
