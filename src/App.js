@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
@@ -13,6 +14,14 @@ function App() {
   const [winner, setWinner] = useState(null);
   const [moves, setMoves] = useState([]);
   const [winMoves, setWinMoves] = useState([]);
+
+  function restartGame() {
+    const randomPlayer = Date.now() % 2;
+    setPlayer(players[randomPlayer]);
+    setWinner(null);
+    setMoves([]);
+    setWinMoves([]);
+  }
 
   useEffect(() => {
     const diagonalWin = ['1,1', '2,2', '3,3'];
@@ -120,6 +129,10 @@ function App() {
             <div>{player.name}</div>
           </>
         )}
+      <p>&nbsp;</p>
+      <button type="button" onClick={() => restartGame()}>
+        Restart Game
+      </button>
     </div>
   );
 }
