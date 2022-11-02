@@ -35,3 +35,9 @@
   margin: 0 2px;
   width: 120px;
 }
+
+.text-red {
+  color: red;
+  font-weight: bold;
+  font-size: x-large;
+}

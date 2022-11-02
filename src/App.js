@@ -12,28 +12,42 @@ function App() {
   const [player, setPlayer] = useState(players[randomPlayer]);
   const [winner, setWinner] = useState(null);
   const [moves, setMoves] = useState([]);
-
-  function playerWon(filteredMoves) {
-    const xValues = [0, 0, 0];
-    const yValues = [0, 0, 0];
-    let diagonal = 0;
-    let diagonalReverse = 0;
-
-    filteredMoves.forEach((move) => {
-      xValues[move.coord[0]] += 1;
-      yValues[move.coord[1]] += 1;
-
-      const moveCoordJoin = move.coord.join();
-      if (['1,1', '2,2', '3,3'].includes(moveCoordJoin)) diagonal += 1;
-      if (['1,3', '2,2', '3,1'].includes(moveCoordJoin)) diagonalReverse += 1;
-    });
-
-    return (Object.values(xValues).find((val) => val === 3)
-            || Object.values(yValues).find((val) => val === 3)
-            || diagonal === 3 || diagonalReverse === 3);
-  }
+  const [winMoves, setWinMoves] = useState([]);
 
   useEffect(() => {
+    const diagonalWin = ['1,1', '2,2', '3,3'];
+    const diagonalReverseWin = ['1,3', '2,2', '3,1'];
+
+    function getWinMoves(x, y, d, r) {
+      if (x > 0) return [1, 2, 3].map((yy) => `${x},${yy}`);
+      if (y > 0) return [1, 2, 3].map((xx) => `${xx},${y}`);
+      if (d === 3) return diagonalWin;
+      if (r === 3) return diagonalReverseWin;
+      return [];
+    }
+
+    function playerWon(filteredMoves) {
+      const xValues = [0, 0, 0];
+      const yValues = [0, 0, 0];
+      let diagonal = 0;
+      let diagonalReverse = 0;
+
+      filteredMoves.forEach((move) => {
+        xValues[move.coord[0] - 1] += 1;
+        yValues[move.coord[1] - 1] += 1;
+
+        const moveCoordJoin = move.coord.join();
+        if (diagonalWin.includes(moveCoordJoin)) diagonal += 1;
+        if (diagonalReverseWin.includes(moveCoordJoin)) diagonalReverse += 1;
+      });
+
+      const x = xValues.indexOf(3) + 1;
+      const y = yValues.indexOf(3) + 1;
+      const win = getWinMoves(x, y, diagonal, diagonalReverse);
+      setWinMoves(win);
+      return win.length > 0;
+    }
+
     if (moves.length < 5) return;
 
     const currentPlayer = moves[moves.length - 1].player;
@@ -45,7 +59,9 @@ function App() {
     } else if (moves.length > 8) setWinner({ name: '', title: 'Tied match' });
   }, [moves]);
 
-  function addMove(coord) {
+  function addMove(coord, winnerOrPopulated) {
+    if (winnerOrPopulated) return;
+
     const newMoves = [...moves];
     newMoves.push({ player, coord });
 
@@ -54,12 +70,15 @@ function App() {
   }
 
   function Tile({ coord }) {
-    const populatedCoord = moves.find((move) => move.coord.join() === coord.join());
+    const coordStr = coord.join();
+    const populatedCoord = moves.find((move) => move.coord.join() === coordStr);
 
     const text = populatedCoord?.player?.symbol || '';
 
+    const className = `tile${winMoves.includes(coordStr) ? ' text-red' : ''}`;
+
     return (
-      <div className="tile" onClick={() => addMove(coord)} role="button" tabIndex="0">
+      <div className={className} onClick={() => addMove(coord, winner || populatedCoord)} role="button" tabIndex="0">
         {text}
       </div>
     );
