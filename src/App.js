@@ -4,19 +4,26 @@ import { useState } from 'react';
 import './App.css';
 
 function App() {
+  const players = [
+    { name: 'Player X', symbol: 'X' },
+    { name: 'Player O', symbol: 'O' },
+  ];
+  const randomPlayer = Date.now() % 2;
+  const [player, setPlayer] = useState(players[randomPlayer]);
   const [moves, setMoves] = useState([]);
 
   function addMove(coord) {
     const newMoves = [...moves];
-    newMoves.push(coord);
+    newMoves.push({ player, coord });
 
     setMoves(newMoves);
+    setPlayer(player.name === players[0].name ? players[1] : players[0]);
   }
 
   function Tile({ coord }) {
-    const populatedCoord = moves.find((move) => move.join() === coord.join());
+    const populatedCoord = moves.find((move) => move.coord.join() === coord.join());
 
-    const text = populatedCoord || '';
+    const text = populatedCoord?.player?.symbol || '';
 
     return (
       <div className="tile" onClick={() => addMove(coord)} role="button" tabIndex="0">
@@ -48,6 +55,10 @@ function App() {
           ))}
         </div>
       </div>
+      <>
+        <h2>Current Player</h2>
+        <div>{player.name}</div>
+      </>
     </div>
   );
 }
